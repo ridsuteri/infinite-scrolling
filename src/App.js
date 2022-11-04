@@ -5,14 +5,13 @@ import "./App.css";
 
 function App() {
   const [data, setData] = useState([]);
-  const [query, setQuery] = useState("code");
+  const [query, setQuery] = useState("pokemon");
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  setHasMore(true);
-  const client_id = "4mB0CC1xdwTfTQGjF1v1uO9vS2Z8ubzBPd4X0B86IEU";
-  const fetchUrl = `https://api.unsplash.com/search/photos?client_id=${client_id}&query=${query}&page=${page}`;
 
-  const fetchImages = () => {
+  const fetchUrl = `https://pokeapi.co/api/v2/pokemon`;
+
+  const fetchPokemon = () => {
     axios
       .get(fetchUrl, {
         headers: {},
@@ -25,28 +24,28 @@ function App() {
       });
     setPage(page + 1);
   };
-  const searchImages = (e) => {
+  const searchPokemon = (e) => {
     if (e.keyCode === 13) {
       setQuery(e.target.value);
-      setData([]);
+      // setData([]);
     }
   };
 
   useEffect(() => {
-    fetchImages();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchPokemon();
   }, [query]);
 
   return (
     <div className="App flex">
-      <input
+      {/* <input
         type="text"
-        onKeyDown={(e) => searchImages(e)}
-        placeholder="Search For Images 🔎"
-      />
+        onKeyDown={(e) => searchPokemon(e)}
+        placeholder="Search For Pokemon 🔎"
+      /> */}
+      <h1>PokeDex (with infinite scroll obvo)</h1>
       <InfiniteScroll
         dataLength={data.length}
-        next={fetchImages}
+        next={fetchPokemon}
         hasMore={hasMore}
         loader={<p>Load more...</p>}
         endMessage={
@@ -59,11 +58,11 @@ function App() {
           {data.map((data, key) => (
             <div className="container" key={key}>
               <img
-                src={data.urls.small}
+                src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${key + 1}.png`}
                 className="image"
                 alt={data.alt_description}
               />
-              <h4>Photo by {data.user.name} 📸</h4>
+              <h4><a href="https://emoji.gg/emoji/pokeball"><img src="https://cdn3.emoji.gg/emojis/pokeball.png" width="15px" height="15px" alt="pokeball" /></a> {data.name}</h4>
             </div>
           ))}
         </div>
